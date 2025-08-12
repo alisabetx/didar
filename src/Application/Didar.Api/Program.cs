@@ -1,4 +1,4 @@
-using Didar.Application.Interfaces;
+using Didar.Application.Repositories;
 using Didar.Application.Services;
 using Didar.Infrastructure.Repositories;
 using Didar.Infrastructure.Services;

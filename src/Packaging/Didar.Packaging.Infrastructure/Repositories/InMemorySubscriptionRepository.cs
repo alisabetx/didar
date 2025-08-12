@@ -1,5 +1,5 @@
-using Didar.Packaging.Application.Interfaces;
-using Didar.Packaging.Domain.Entities;
+using Didar.Packaging.Application.Repositories;
+using Didar.Packaging.Domain;
 
 namespace Didar.Packaging.Infrastructure.Repositories;
 

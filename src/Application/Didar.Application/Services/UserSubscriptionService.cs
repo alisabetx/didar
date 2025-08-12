@@ -1,5 +1,4 @@
-using Didar.Application.Interfaces;
-using Didar.Domain.Entities;
+using Didar.Application.Repositories;
 
 namespace Didar.Application.Services;
 
@@ -16,7 +15,7 @@ public class UserSubscriptionService
 
     public async Task UpgradeSubscriptionAsync(int userId, int newLevel, bool failLocal = false)
     {
-        var user = _userRepository.Get(userId) ?? new User(userId, 0);
+        var user = _userRepository.Get(userId) ?? new Domain.User(userId, 0);
         _userRepository.Upsert(user);
         var previousLevel = user.SubscriptionLevel;
 

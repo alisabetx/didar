@@ -1,5 +1,5 @@
-using Didar.Application.Interfaces;
-using Didar.Domain.Entities;
+using Didar.Application.Repositories;
+using Didar.Domain;
 
 namespace Didar.Infrastructure.Repositories;
 
