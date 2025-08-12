@@ -5,7 +5,7 @@ namespace Didar.Infrastructure.Repositories;
 
 public class InMemoryUserRepository : IUserRepository
 {
-    private readonly Dictionary<int, User> _users = new();
+    private readonly Dictionary<int, User> _users = [];
 
     public User? Get(int id) => _users.TryGetValue(id, out var user) ? new User(user.Id, user.SubscriptionLevel) : null;
 

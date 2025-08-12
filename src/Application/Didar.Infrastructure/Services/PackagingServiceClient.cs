@@ -1,26 +1,19 @@
-using System.Net.Http.Json;
 using Didar.Application.Services;
+using System.Net.Http.Json;
 
 namespace Didar.Infrastructure.Services;
 
-public class PackagingServiceClient : IPackagingService
+public class PackagingServiceClient(HttpClient httpClient) : IPackagingService
 {
-    private readonly HttpClient _httpClient;
-
-    public PackagingServiceClient(HttpClient httpClient)
-    {
-        _httpClient = httpClient;
-    }
-
     public async Task UpgradeSubscriptionAsync(int userId, int newLevel)
     {
-        var response = await _httpClient.PostAsJsonAsync("api/subscriptions/upgrade", new { userId, newLevel });
+        var response = await httpClient.PostAsJsonAsync("api/subscriptions/upgrade", new { userId, newLevel });
         response.EnsureSuccessStatusCode();
     }
 
     public async Task RollbackSubscriptionAsync(int userId, int previousLevel)
     {
-        var response = await _httpClient.PostAsJsonAsync("api/subscriptions/rollback", new { userId, previousLevel });
+        var response = await httpClient.PostAsJsonAsync("api/subscriptions/rollback", new { userId, previousLevel });
         response.EnsureSuccessStatusCode();
     }
 
@@ -28,7 +21,7 @@ public class PackagingServiceClient : IPackagingService
     {
         try
         {
-            var response = await _httpClient.GetAsync("api/subscriptions/health");
+            var response = await httpClient.GetAsync("api/subscriptions/health");
             return response.IsSuccessStatusCode;
         }
         catch

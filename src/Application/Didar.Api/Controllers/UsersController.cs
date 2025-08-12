@@ -5,19 +5,12 @@ namespace Didar.Api.Controllers;
 
 [ApiController]
 [Route("api/[controller]")]
-public class UsersController : ControllerBase
+public class UsersController(UserSubscriptionService service) : ControllerBase
 {
-    private readonly UserSubscriptionService _service;
-
-    public UsersController(UserSubscriptionService service)
-    {
-        _service = service;
-    }
-
     [HttpPost("{id}/subscription/upgrade")]
     public async Task<IActionResult> Upgrade(int id, UpgradeRequest request)
     {
-        await _service.UpgradeSubscriptionAsync(id, request.NewLevel, request.FailLocal);
+        await service.UpgradeSubscriptionAsync(id, request.NewLevel, request.FailLocal);
         return Ok();
     }
 }

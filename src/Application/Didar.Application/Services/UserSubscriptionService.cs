@@ -2,32 +2,23 @@ using Didar.Application.Repositories;
 
 namespace Didar.Application.Services;
 
-public class UserSubscriptionService
+public class UserSubscriptionService(IUserRepository userRepository, IPackagingService packagingService)
 {
-    private readonly IUserRepository _userRepository;
-    private readonly IPackagingService _packagingService;
-
-    public UserSubscriptionService(IUserRepository userRepository, IPackagingService packagingService)
-    {
-        _userRepository = userRepository;
-        _packagingService = packagingService;
-    }
-
     public async Task UpgradeSubscriptionAsync(int userId, int newLevel, bool failLocal = false)
     {
-        var user = _userRepository.Get(userId) ?? new Domain.User(userId, 0);
-        _userRepository.Upsert(user);
+        var user = userRepository.Get(userId) ?? new Domain.User(userId, 0);
+        userRepository.Upsert(user);
         var previousLevel = user.SubscriptionLevel;
 
-        using var transaction = _userRepository.BeginTransaction(userId);
+        using var transaction = userRepository.BeginTransaction(userId);
         bool packagingApplied = false;
 
         try
         {
             user.SubscriptionLevel = newLevel;
-            _userRepository.Upsert(user);
+            userRepository.Upsert(user);
 
-            await _packagingService.UpgradeSubscriptionAsync(userId, newLevel);
+            await packagingService.UpgradeSubscriptionAsync(userId, newLevel);
             packagingApplied = true;
 
             if (failLocal)
@@ -42,11 +33,11 @@ public class UserSubscriptionService
             transaction.Rollback();
             if (packagingApplied)
             {
-                await _packagingService.RollbackSubscriptionAsync(userId, previousLevel);
+                await packagingService.RollbackSubscriptionAsync(userId, previousLevel);
             }
             throw;
         }
     }
 
-    public Task<bool> CheckPackagingHealthAsync() => _packagingService.CheckHealthAsync();
+    public Task<bool> CheckPackagingHealthAsync() => packagingService.CheckHealthAsync();
 }

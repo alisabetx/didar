@@ -5,26 +5,19 @@ namespace Didar.Packaging.Api.Controllers;
 
 [ApiController]
 [Route("api/[controller]")]
-public class SubscriptionsController : ControllerBase
+public class SubscriptionsController(SubscriptionService subscriptionService) : ControllerBase
 {
-    private readonly SubscriptionService _service;
-
-    public SubscriptionsController(SubscriptionService service)
-    {
-        _service = service;
-    }
-
     [HttpPost("upgrade")]
     public async Task<IActionResult> Upgrade(UpgradeRequest request)
     {
-        await _service.UpgradeAsync(request.UserId, request.NewLevel);
+        await subscriptionService.UpgradeAsync(request.UserId, request.NewLevel);
         return Ok();
     }
 
     [HttpPost("rollback")]
     public async Task<IActionResult> Rollback(RollbackRequest request)
     {
-        await _service.RollbackAsync(request.UserId, request.PreviousLevel);
+        await subscriptionService.RollbackAsync(request.UserId, request.PreviousLevel);
         return Ok();
     }
 
